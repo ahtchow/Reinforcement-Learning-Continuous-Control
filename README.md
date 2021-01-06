@@ -1,1 +1,1 @@
-# Reinforcement-Learning-Continious-Control
+# Reinforcement-Learning-Continuous-Control
