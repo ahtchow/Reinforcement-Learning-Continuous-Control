@@ -17,12 +17,12 @@ from replay_buffer import ReplayBuffer
 BUFFER_SIZE = int(1e5)  # replay buffer size
 BATCH_SIZE = 128        # minibatch size
 GAMMA = 0.99            # discount factor
-TAU = 1e-3              # for soft update of target parameters
-LR_ACTOR = 0.0001       # learning rate of the actor
-LR_CRITIC = 0.001       # learning rate of the critic
+TAU = 2e-3              # for soft update of target parameters
+LR_ACTOR = 0.003        # learning rate of the actor
+LR_CRITIC = 0.003       # learning rate of the critic
 WEIGHT_DECAY = 0        # L2 weight decay
 NOISE_CLIP = 0.5        # Max Noise
-UPDATE_EVERY = 2        # LEARN EVERY N STEPS
+UPDATE_EVERY = 1        # LEARN EVERY N STEPS
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -107,8 +107,7 @@ class TD3:
         states, actions, rewards, next_states, dones = experiences
 
         # Select next action according to target policy:
-        actions_cpy = copy.copy(actions)
-        noise = self.noise.sample()
+        noise = torch.from_numpy(self.noise.sample()).float().to(device) # (float)
         noise = noise.clamp(-NOISE_CLIP, NOISE_CLIP)
         next_actions = (self.actor_target(next_states) + noise)
         next_actions = next_actions.clamp(-1, 1)
